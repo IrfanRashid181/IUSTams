@@ -1,0 +1,77 @@
+﻿@model AMSProj.Models.Classroom
+
+@{
+    ViewData["Title"] = "Create Classroom";
+}
+
+<h2>Create Classroom</h2>
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label for="Campus">Campus</label>
+        <select id="Campus" class="form-control">
+            <option value="">-- Select Campus --</option>
+            @foreach (var campus in ViewBag.Campuses)
+            {
+                <option value="@campus.Value">@campus.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="Building">Building</label>
+        <select id="Building" class="form-control">
+            <option value="">-- Select Building --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="FloorID">Floor</label>
+        <select id="FloorID" name="FloorID" class="form-control">
+            <option value="">-- Select Floor --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DepartmentID" class="control-label"></label>
+        <select asp-for="DepartmentID" class="form-control" asp-items="ViewBag.Departments"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Classroom_Name" class="control-label"></label>
+        <input asp-for="Classroom_Name" class="form-control" />
+        <span asp-validation-for="Classroom_Name" class="text-danger"></span>
+    </div>
+
+    <input type="submit" value="Create" class="btn btn-primary" />
+</form>
+
+@section Scripts {
+    <script>
+        $('#Campus').change(function () {
+            var campusId = $(this).val();
+            $('#Building').html('<option>Loading...</option>');
+            $.getJSON('/Classrooms/GetBuildings?campusId=' + campusId, function (data) {
+                $('#Building').html('<option value="">-- Select Building --</option>');
+                $.each(data, function (i, item) {
+                    $('#Building').append('<option value="' + item.id + '">' + item.building_Name + '</option>');
+                });
+            });
+        });
+
+        $('#Building').change(function () {
+            var buildingId = $(this).val();
+            $('#FloorID').html('<option>Loading...</option>');
+            $.getJSON('/Classrooms/GetFloors?buildingId=' + buildingId, function (data) {
+                $('#FloorID').html('<option value="">-- Select Floor --</option>');
+                $.each(data, function (i, item) {
+                    $('#FloorID').append('<option value="' + item.id + '">' + item.floorNo + '</option>');
+                });
+            });
+        });
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

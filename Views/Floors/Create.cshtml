@@ -1,0 +1,60 @@
+﻿@model AMSProj.Models.Floor
+
+@{
+    ViewData["Title"] = "Create Floor";
+}
+
+<h2>Create Floor</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="CampusID">Select Campus</label>
+        <select id="CampusID" class="form-control">
+            <option value="">-- Select Campus --</option>
+            @foreach (var campus in ViewBag.Campuses)
+            {
+                <option value="@campus.ID">@campus.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="BuildingID">Select Building</label>
+        <select asp-for="BuildingID" class="form-control" id="BuildingID">
+            <option value="">-- Select Building --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Floor Number</label>
+        <input asp-for="FloorNo" class="form-control" readonly id="FloorNo" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#CampusID").change(function () {
+            var campusId = $(this).val();
+            $("#BuildingID").empty().append('<option value="">-- Loading Buildings --</option>');
+            $.getJSON("/Floors/GetBuildingsByCampus", { campusId: campusId }, function (data) {
+                $("#BuildingID").empty().append('<option value="">-- Select Building --</option>');
+                $.each(data, function (i, building) {
+                    $("#BuildingID").append('<option value="' + building.id + '">' + building.name + '</option>');
+                });
+            });
+        });
+
+        $("#BuildingID").change(function () {
+            var buildingId = $(this).val();
+            if (buildingId) {
+                $.getJSON("/Floors/GetFloorCount", { buildingId: buildingId }, function (data) {
+                    var nextFloorNo = data.count + 1;
+                    $("#FloorNo").val(nextFloorNo);
+                });
+            }
+        });
+    </script>
+}

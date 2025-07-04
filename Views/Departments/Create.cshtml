@@ -1,0 +1,103 @@
+﻿@model AMSProj.Models.Department
+
+@{
+    ViewData["Title"] = "Create Department";
+}
+
+<h1>Create Department</h1>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Campus Dropdown -->
+            <div class="form-group">
+                <label>Campus</label>
+                <select id="CampusID" class="form-control">
+                    <option value="">-- Select Campus --</option>
+                    @foreach (var campus in ViewBag.Campuses)
+                    {
+                        <option value="@campus.ID">@campus.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Building Dropdown -->
+            <div class="form-group">
+                <label>Building</label>
+                <select id="BuildingID" class="form-control" disabled>
+                    <option value="">-- Select Building --</option>
+                </select>
+            </div>
+
+            <!-- Floor Dropdown -->
+            <div class="form-group">
+                <label asp-for="FloorID" class="control-label"></label>
+                <select asp-for="FloorID" class="form-control" disabled id="FloorIDDropdown" name="FloorID">
+                    <option value="">-- Select Floor --</option>
+                </select>
+                <span asp-validation-for="FloorID" class="text-danger"></span>
+            </div>
+
+            <!-- Department Name -->
+            <div class="form-group">
+                <label asp-for="Department_Name" class="control-label"></label>
+                <input asp-for="Department_Name" class="form-control" />
+                <span asp-validation-for="Department_Name" class="text-danger"></span>
+            </div>
+
+            <!-- Submit -->
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            // On Campus change
+            $("#CampusID").change(function () {
+                var campusId = $(this).val();
+                $("#BuildingID").prop("disabled", true).empty().append('<option value="">-- Loading --</option>');
+                $("#FloorIDDropdown").prop("disabled", true).empty().append('<option value="">-- Select Floor --</option>');
+
+                if (campusId) {
+                    $.getJSON('/Departments/GetBuildingsByCampus', { campusId: campusId }, function (buildings) {
+                        $("#BuildingID").empty().append('<option value="">-- Select Building --</option>');
+                        $.each(buildings, function (i, building) {
+                            $("#BuildingID").append('<option value="' + building.id + '">' + building.name + '</option>');
+                        });
+                        $("#BuildingID").prop("disabled", false);
+                    });
+                } else {
+                    $("#BuildingID").prop("disabled", true);
+                }
+            });
+
+            // On Building change
+            $("#BuildingID").change(function () {
+                var buildingId = $(this).val();
+                $("#FloorIDDropdown").prop("disabled", true).empty().append('<option value="">-- Loading --</option>');
+
+                if (buildingId) {
+                    $.getJSON('/Departments/GetFloorsByBuilding', { buildingId: buildingId }, function (floors) {
+                        $("#FloorIDDropdown").empty().append('<option value="">-- Select Floor --</option>');
+                        $.each(floors, function (i, floor) {
+                            $("#FloorIDDropdown").append('<option value="' + floor.id + '">' + floor.name + '</option>');
+                        });
+                        $("#FloorIDDropdown").prop("disabled", false);
+                    });
+                } else {
+                    $("#FloorIDDropdown").prop("disabled", true);
+                }
+            });
+        });
+    </script>
+}

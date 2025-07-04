@@ -1,0 +1,103 @@
+﻿@model AMSProj.Models.MeetingHall
+
+@{
+    ViewData["Title"] = "Create";
+    var campuses = ViewData["Campuses"] as SelectList;
+}
+
+<h1>Create Meeting Hall</h1>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Campus Dropdown -->
+            <div class="form-group">
+                <label for="CampusID" class="control-label">Select Campus</label>
+                <select id="CampusID" class="form-control">
+                    <option value="">-- Select Campus --</option>
+                    @foreach (var item in campuses)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Building Dropdown -->
+            <div class="form-group">
+                <label for="BuildingID" class="control-label">Select Building</label>
+                <select id="BuildingID" class="form-control">
+                    <option value="">-- Select Building --</option>
+                </select>
+            </div>
+
+            <!-- Floor Dropdown -->
+            <div class="form-group">
+                <label asp-for="FloorID" class="control-label">Select Floor</label>
+                <select asp-for="FloorID" class="form-control">
+                    <option value="">-- Select Floor --</option>
+                </select>
+                <span asp-validation-for="FloorID" class="text-danger"></span>
+            </div>
+
+            <!-- MeetingHall Name -->
+            <div class="form-group">
+                <label asp-for="MeetingHall_Name" class="control-label"></label>
+                <input asp-for="MeetingHall_Name" class="form-control" />
+                <span asp-validation-for="MeetingHall_Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $('#CampusID').change(function () {
+            var campusId = $(this).val();
+            $('#BuildingID').empty().append('<option value="">-- Loading Buildings --</option>');
+            $('#FloorID').empty().append('<option value="">-- Select Floor --</option>');
+
+            if (campusId) {
+                $.getJSON('/MeetingHalls/GetBuildings', { campusId: campusId }, function (data) {
+                    $('#BuildingID').empty().append('<option value="">-- Select Building --</option>');
+                    $.each(data, function (i, item) {
+                        $('#BuildingID').append($('<option>', {
+                            value: item.id,
+                            text: item.building_Name
+                        }));
+                    });
+                });
+            }
+        });
+
+        $('#BuildingID').change(function () {
+            var buildingId = $(this).val();
+            $('#FloorID').empty().append('<option value="">-- Loading Floors --</option>');
+
+            if (buildingId) {
+                $.getJSON('/MeetingHalls/GetFloors', { buildingId: buildingId }, function (data) {
+                    $('#FloorID').empty().append('<option value="">-- Select Floor --</option>');
+                    $.each(data, function (i, item) {
+                        $('#FloorID').append($('<option>', {
+                            value: item.id,
+                            text: item.floorNo
+                        }));
+                    });
+                });
+            }
+        });
+    </script>
+}

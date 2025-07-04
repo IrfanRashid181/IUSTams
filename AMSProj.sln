@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMSProj", "AMSProj.csproj", "{52EF0F28-FC58-4F15-8994-91F51E371B2B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ViewModels", "ViewModels", "{0750C869-A125-4BD8-A608-67CFDF41D101}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52EF0F28-FC58-4F15-8994-91F51E371B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52EF0F28-FC58-4F15-8994-91F51E371B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52EF0F28-FC58-4F15-8994-91F51E371B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52EF0F28-FC58-4F15-8994-91F51E371B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {23124786-8D1C-4EC1-BD1F-38F834DD1330}
+	EndGlobalSection
+EndGlobal
